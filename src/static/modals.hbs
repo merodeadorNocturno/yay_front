@@ -1,0 +1,45 @@
+<div id="modal-containter">
+  <div id="error_enterprise_table_modal" class="modal">
+    <div class="modal-background"></div>
+
+    <div class="modal-content">
+      <div class="box">
+        <p>Error loading Enterprise section</p>
+        <!-- Your content -->
+      </div>
+    </div>
+
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
+
+  <div class="modal" id="delete-user-confirmation-modal">
+    <div class="modal-background"></div>
+    <div class="modal-content notification is-warning">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Borrar Usuario</p>
+        </header>
+        <div class="card-content">
+          <div class="content" id="confirm-delete-user-message"></div>
+        </div>
+        <footer class="card-footer">
+          <a class="card-footer-item" id="cancel-delete-user-button">Cancel</a>
+          <a href="#" class="card-footer-item">&nbsp;</a>
+          <a
+            href="#"
+            class="card-footer-item"
+            id="delete-user-button-modal"
+            data="{{u.uuid}}"
+            >BORRAR</a
+          >
+        </footer>
+      </div>
+    </div>
+    <input type="hidden" id="rnd" value="" />
+    <button
+      class="modal-close is-large"
+      aria-label="close"
+      id="delete-user-modal-close-button"
+    ></button>
+  </div>
+</div>

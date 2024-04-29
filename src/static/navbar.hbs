@@ -1,0 +1,61 @@
+<section class="section">
+  <!-- Navbar section -->
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a href="{{server_conf}}" class="navbar-item">
+        <img
+          src="https://media.licdn.com/dms/image/C4E0BAQFiPmMfUP226g/company-logo_200_200/0/1672639387526/yayleadsmx_logo?e=2147483647&v=beta&t=iTE1q3k9J3Q6vBt7U8N4WNk1vuj8b3W7auP0a4hmHTg"
+          alt="Yay leads"
+        />
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <div class="navbar-dropdown">
+          <a href="#" class="navbar-item">Acerca del CRM</a>
+          <a href="#" class="navbar-item">Another Item</a>
+        </div>
+      </div>
+
+      <a
+        role="button"
+        class="navbar-burger"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true"></span> <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-start" id="navbar-start-id">
+        <a
+          href=""
+          class="navbar-item"
+          hx-post="{{backend_url}}user_htmx"
+          hx-swap="innerHTML"
+          hx-target="#dynamic-content"
+          >Users</a
+        >
+        <a
+          class="navbar-item"
+          hx-post="{{backend_url}}enterprise_table"
+          hx-swap="innerHTML"
+          hx-target="#dynamic-content"
+        >
+          Enterprise
+        </a>
+        <a
+          class="navbar-item"
+          hx-get="{{backend_url}}help"
+          hx-swap="innerHTML"
+          hx-target="#dynamic-content"
+        >
+          Help
+        </a>
+      </div>
+    </div>
+  </nav>
+</section>
+<!-- /Navbar section -->

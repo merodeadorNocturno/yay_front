@@ -62,13 +62,16 @@ ev.address = "0.0.0.0";
 ev.port = 8081;
 ev.be_port = "8080";
 ev.be_protocol = "http";
-ev.be_address = "0.0.0.0";
+ev.be_address = "192.168.68.106";
 
 const delete_user_alert_event = new Event("delete-user-alert");
 const local_url = () => `${ev.protocol}://${ev.address}:${ev.port}/`;
 const backe_url = () => `${ev.be_protocol}://${ev.be_address}:${ev.be_port}/`;
 
-htmx.logAll();
+var buffer_name = document.getElementById("buffer-name");
+var buffer_id = document.getElementById("buffer-id");
+
+// htmx.logAll();
 
 function trigger_delete($e) {
   const data = $e.getAttribute("data");
@@ -84,7 +87,7 @@ function trigger_delete($e) {
   document.dispatchEvent(delete_user_alert_event);
 }
 
-async function remove_class_delete_user(req_url = `${local_url}user_htmx`) {
+async function remove_class_delete_user(req_url = `${local_url}htmx/user`) {
   const delete_user_modal = document.getElementById("delete-user-alert");
   const dynamic_content = document.getElementById("dynamic-content");
 
@@ -100,6 +103,18 @@ async function remove_class_delete_user(req_url = `${local_url}user_htmx`) {
 
   htmx.process(dynamic_content);
   delete_user_modal.classList.remove("is-active");
+}
+
+async function testHttpEvent(req_url) {
+  let users_table = "";
+
+  for await (const line of iterate_over_stream_response(
+    `${req_url}/user/delete/${buffer_id.textContent}`,
+  )) {
+    users_table = `${users_table}${line}`;
+  }
+
+  document.dispatchEvent(ajaxCompleteEvent);
 }
 
 async function* iterate_over_stream_response(file_url) {

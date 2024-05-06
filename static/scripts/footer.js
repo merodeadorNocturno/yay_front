@@ -8,6 +8,17 @@ let ajaxCompleteEvent = new CustomEvent("ajaxComplete", {
   },
 });
 
+document.addEventListener("ajaxComplete", function (e) {
+  console.log(e.detail.message); // Logs "AJAX request completed!"
+  // htmx.process("container");
+  ks(State.SEND_ERASE_COMMAND);
+  machine(Input.RECEIVE_CONFIRMATION_FROM_SERVER);
+  // let users_navbar_menu = document.getElementById("users-navbar-menu");
+  // let users_navbar_click = new Event("click");
+  // users_navbar_menu.dispatchEvent(users_navbar_click);
+  // htmx.process("#container");
+});
+
 // document.body.addEventListener("user-delete-error", (e) => {
 //   console.log("USER DELETE ERROR");
 // });
@@ -32,7 +43,7 @@ let ajaxCompleteEvent = new CustomEvent("ajaxComplete", {
   const close_modal = (element) => element.classList.remove("is-active");
 
   // Listeners
-  nbs.addEventListener("enterprise_table", (e) => {
+  nbs.addEventListener("activate_navbar_element", (e) => {
     add_skeleton();
     const enterprise_element = e.target;
     const parent_element = enterprise_element.parentNode;
@@ -40,26 +51,6 @@ let ajaxCompleteEvent = new CustomEvent("ajaxComplete", {
     remove_class(parent_element.childNodes, "is-active");
 
     enterprise_element.classList.add("is-active");
-  });
-
-  nbs.addEventListener("user_table", (e) => {
-    add_skeleton();
-    const user_element = e.target;
-    const parent_element = user_element.parentNode;
-
-    remove_class(parent_element.childNodes, "is-active");
-
-    user_element.classList.add("is-active");
-  });
-
-  nbs.addEventListener("help_table", (e) => {
-    add_skeleton();
-    const help_element = e.target;
-    const parent_element = help_element.parentNode;
-
-    remove_class(parent_element.childNodes, "is-active");
-
-    help_element.classList.add("is-active");
   });
 
   nbs.addEventListener("error_enterprise_table", (e) => {

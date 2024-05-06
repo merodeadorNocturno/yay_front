@@ -25,8 +25,6 @@ var all_trash_cans = document.getElementsByClassName("press-trash");
 var cancel_delete_user_button = document.getElementById(
   "cancel-delete-user-button",
 );
-var buffer_name = document.getElementById("buffer-name");
-var buffer_id = document.getElementById("buffer-id");
 
 var confirm_delete_user_message = document.getElementById(
   "confirm-delete-user-message",
@@ -95,18 +93,18 @@ function open_modal() {
 }
 
 async function send_erase_command() {
-  let deleted_user = "";
-  for await (const html_line of iterate_over_stream_response(
-    `${backe_url()}/user/delete/${buffer_id.textContent}`,
-  )) {
-    deleted_user = `${deleted_user}${html_line}`;
-  }
+  testHttpEvent(`${backe_url()}`);
 }
 
 function close_modal() {
   ks(State.MAIN_SCREEN);
   confirmation_modal.classList.remove("is-active");
-  htmx.process("user-table");
+  // htmx.process("user-table");
+  //
+  htmx.ajax(`POST`, `${backe_url()}htmx/user`, {
+    target: "#dynamic-content",
+    swap: "innerHTML",
+  });
 }
 
 function display_server_error_message() {}
@@ -134,10 +132,10 @@ async function machine(input) {
       break;
     case State.SEND_ERASE_COMMAND:
       if (input === Input.RECEIVE_ERROR_FROM_SERVER) {
-        ks(State.DISPLAY_SERVER_ERROR_MESSAGE);
+        close_modal();
       }
       if (input === Input.RECEIVE_CONFIRMATION_FROM_SERVER) {
-        ks(State.SUCCESSFUL_OPERATION);
+        console.log("DELETE AND CLOSING");
         close_modal();
       }
       break;

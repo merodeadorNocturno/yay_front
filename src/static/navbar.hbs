@@ -33,9 +33,10 @@
         <a
           href=""
           class="navbar-item"
-          hx-post="{{backend_url}}user_htmx"
+          hx-post="{{backend_url}}htmx/user"
           hx-swap="innerHTML"
           hx-target="#dynamic-content"
+          id="users-navbar-menu"
           >Users</a
         >
         <a
@@ -44,7 +45,23 @@
           hx-swap="innerHTML"
           hx-target="#dynamic-content"
         >
-          Enterprise
+          Empresas
+        </a>
+        <a
+          class="navbar-item"
+          hx-post="{{backend_url}}htmx/clinics/table"
+          hx-swap="innerHTML"
+          hx-target="#dynamic-content"
+        >
+          Clínicas y Médicos
+        </a>
+        <a
+          class="navbar-item"
+          hx-post="{{backend_url}}htmx/schools/table"
+          hx-swap="innerHTML"
+          hx-target="#dynamic-content"
+        >
+          Escuelas
         </a>
         <a
           class="navbar-item"

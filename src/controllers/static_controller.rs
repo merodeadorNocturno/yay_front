@@ -1,11 +1,9 @@
 use actix_files as fs;
 use actix_web::http::header::{ContentDisposition, DispositionType};
 use actix_web::{get, web::ServiceConfig, Error, HttpRequest};
-use log::{debug, info, warn};
+use log::{info, warn};
 
 use crate::utils::env::get_cwd;
-
-// use crate::constants::connection::set_environment_variable;
 
 #[get("/{filename:.*}")]
 async fn scripts_static(req: HttpRequest) -> Result<fs::NamedFile, Error> {
@@ -17,7 +15,7 @@ async fn scripts_static(req: HttpRequest) -> Result<fs::NamedFile, Error> {
     let path: std::path::PathBuf = req.match_info().query("filename").parse().unwrap();
 
     // let my_path = format!("./{:?}", path);
-    debug!("PATH:: {:?}", &path);
+    info!("PATH:: {:?}", &path);
     let file = fs::NamedFile::open_async(path).await?;
 
     Ok(file

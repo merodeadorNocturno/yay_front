@@ -58,15 +58,22 @@ class UrlEnvVars {
 
 const ev = new UrlEnvVars();
 ev.protocol = "http";
+// ev.address = "crm.yayleads.mx";
 ev.address = "0.0.0.0";
-ev.port = 8081;
+// ev.port = "80";
+ev.port = "8081";
+// ev.be_port = "80";
 ev.be_port = "8080";
+// ev.be_protocol = "https";
 ev.be_protocol = "http";
-ev.be_address = "192.168.68.106";
+// ev.be_address = "192.168.68.106";
+ev.be_address = "api.yayleads.mx";
 
 const delete_user_alert_event = new Event("delete-user-alert");
-const local_url = () => `${ev.protocol}://${ev.address}:${ev.port}/`;
-const backe_url = () => `${ev.be_protocol}://${ev.be_address}:${ev.be_port}/`;
+const local_url = () =>
+  `${ev.protocol}://${ev.address}${ev.port === "80" ? "" : ":" + ev.port}/`;
+const backe_url = () =>
+  `${ev.be_protocol}://${ev.be_address}${ev.port === "80" ? "" : ":" + ev.port}/`;
 
 var buffer_name = document.getElementById("buffer-name");
 var buffer_id = document.getElementById("buffer-id");

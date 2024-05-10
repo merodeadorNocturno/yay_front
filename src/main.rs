@@ -3,8 +3,19 @@ use actix_web::{middleware, App, HttpServer};
 use env_logger::{Builder, WriteStyle};
 use log::{info, warn, LevelFilter};
 
+// use actix_web_httpauth::{
+//     extractors::{
+//         bearer::{BearerAuth, Config},
+//         AuthenticationError,
+//     },
+//     middleware::HttpAuthentication,
+// };
+// ppGatyMacky_141592
+
+// mod auth;
 mod constants;
 mod controllers;
+// mod error;
 mod utils;
 
 // use crate::constants::connection::set_environment_variable;

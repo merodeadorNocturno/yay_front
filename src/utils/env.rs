@@ -21,10 +21,15 @@ fn get_server_conf() -> String {
 
 fn get_backend_url() -> String {
     let backend_address = set_environment_variable("BACKEND_ADDRESS", "0.0.0.0");
-    let backend_port = set_environment_variable("BACKEND_PORT", "8080");
+    let mut backend_port = set_environment_variable("BACKEND_PORT", "8080");
     let backend_protocol = set_environment_variable("BACKEND_PROTOCOL", "http");
 
-    format!("{backend_protocol}://{backend_address}:{backend_port}/")
+    if backend_port != "80".to_string() {
+        backend_port = format!(":{}", &backend_port);
+    } else {
+        backend_port = "".to_string();
+    }
+    format!("{backend_protocol}://{backend_address}{backend_port}/")
 }
 
 #[derive(Debug, Deserialize, Serialize)]

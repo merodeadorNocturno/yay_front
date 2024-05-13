@@ -3,19 +3,8 @@ use actix_web::{middleware, App, HttpServer};
 use env_logger::{Builder, WriteStyle};
 use log::{info, warn, LevelFilter};
 
-// use actix_web_httpauth::{
-//     extractors::{
-//         bearer::{BearerAuth, Config},
-//         AuthenticationError,
-//     },
-//     middleware::HttpAuthentication,
-// };
-// ppGatyMacky_141592
-
-// mod auth;
 mod constants;
 mod controllers;
-// mod error;
 mod utils;
 
 // use crate::constants::connection::set_environment_variable;
@@ -43,7 +32,6 @@ async fn main() -> std::io::Result<()> {
     } = set_env_urls();
 
     let server_address_conf: String = format!("{server_address}:{server_port}");
-    // set_environment_variable("SERVER_ADDRESS", &format!("{server_address}:{server_port}"));
 
     info!("Welcome to Yay_CRM");
     HttpServer::new(move || {

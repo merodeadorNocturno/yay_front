@@ -1,4 +1,4 @@
-use log::info;
+use log::{info, LevelFilter};
 use serde::{Deserialize, Serialize};
 use std::{env, io};
 
@@ -30,6 +30,22 @@ fn get_backend_url() -> String {
         backend_port = "".to_string();
     }
     format!("{backend_protocol}://{backend_address}{backend_port}/")
+}
+
+pub fn get_log_level() -> LevelFilter {
+    let log_level = set_environment_variable("RUST_LOG", "debug");
+
+    let level_filter = match log_level.as_str() {
+        "off" => LevelFilter::Off,
+        "error" => LevelFilter::Error,
+        "warn" => LevelFilter::Warn,
+        "info" => LevelFilter::Info,
+        "debug" => LevelFilter::Debug,
+        "trace" => LevelFilter::Trace,
+        _ => LevelFilter::Debug,
+    };
+
+    level_filter
 }
 
 #[derive(Debug, Deserialize, Serialize)]

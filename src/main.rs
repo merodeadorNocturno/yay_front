@@ -1,7 +1,7 @@
 use actix_cors::Cors;
 use actix_web::{middleware, App, HttpServer};
 use env_logger::{Builder, WriteStyle};
-use log::{info, warn, LevelFilter};
+use log::{info, warn};
 
 mod constants;
 mod controllers;
@@ -9,14 +9,16 @@ mod utils;
 
 // use crate::constants::connection::set_environment_variable;
 use crate::controllers::{my_web_controller::*, static_controller::static_controllers};
-use crate::utils::env::{get_cwd, set_env_urls, PageConfiguration};
+use crate::utils::env::{get_cwd, get_log_level, set_env_urls, PageConfiguration};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let mut builder = Builder::new();
 
+    // let log_level =
+
     builder
-        .filter(None, LevelFilter::Debug)
+        .filter(None, get_log_level())
         .write_style(WriteStyle::Always)
         .init();
 

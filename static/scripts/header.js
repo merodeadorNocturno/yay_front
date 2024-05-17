@@ -73,7 +73,7 @@ const delete_user_alert_event = new Event("delete-user-alert");
 const local_url = () =>
   `${ev.protocol}://${ev.address}${ev.port === "80" ? "" : ":" + ev.port}/`;
 const backe_url = () =>
-  `${ev.be_protocol}://${ev.be_address}${ev.port === "80" || ev.port === "443" ? "" : ":" + ev.port}/`;
+  `${ev.be_protocol}://${ev.be_address}${ev.be_port === "80" || ev.be_port === "443" ? "" : ":" + ev.be_port}/`;
 
 var buffer_name = document.getElementById("buffer-name");
 var buffer_id = document.getElementById("buffer-id");

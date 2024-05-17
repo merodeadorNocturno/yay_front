@@ -16,11 +16,6 @@ var Input = {
   RECEIVE_CONFIRMATION_FROM_SERVER: 5,
 };
 
-// modal id
-// delete-user-confirmation-modal
-// tache button:
-// delete-user-modal-close-button
-
 var all_trash_cans = document.getElementsByClassName("press-trash");
 var cancel_delete_user_button = document.getElementById(
   "cancel-delete-user-button",
@@ -99,15 +94,12 @@ async function send_erase_command() {
 function close_modal() {
   ks(State.MAIN_SCREEN);
   confirmation_modal.classList.remove("is-active");
-  // htmx.process("user-table");
-  //
+
   htmx.ajax(`POST`, `${backe_url()}htmx/user`, {
     target: "#dynamic-content",
     swap: "innerHTML",
   });
 }
-
-function display_server_error_message() {}
 
 async function machine(input) {
   switch (ks()) {
@@ -118,7 +110,6 @@ async function machine(input) {
       break;
     case State.OPEN_MODAL:
       if (input === Input.PRESS_DELETE_USER_BUTTON) {
-        // const req_url = ;
         await send_erase_command();
       }
 

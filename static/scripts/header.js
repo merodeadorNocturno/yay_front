@@ -66,14 +66,14 @@ ev.port = "8081";
 ev.be_port = "8080";
 // ev.be_protocol = "https";
 ev.be_protocol = "http";
-// ev.be_address = "192.168.68.106";
+// ev.be_address = "192.168.68.101";
 ev.be_address = "api.yayleads.mx";
 
 const delete_user_alert_event = new Event("delete-user-alert");
 const local_url = () =>
   `${ev.protocol}://${ev.address}${ev.port === "80" ? "" : ":" + ev.port}/`;
 const backe_url = () =>
-  `${ev.be_protocol}://${ev.be_address}${ev.port === "80" ? "" : ":" + ev.port}/`;
+  `${ev.be_protocol}://${ev.be_address}${ev.port === "80" || ev.port === "443" ? "" : ":" + ev.port}/`;
 
 var buffer_name = document.getElementById("buffer-name");
 var buffer_id = document.getElementById("buffer-id");
@@ -116,7 +116,7 @@ async function testHttpEvent(req_url) {
   let users_table = "";
 
   for await (const line of iterate_over_stream_response(
-    `${req_url}/user/delete/${buffer_id.textContent}`,
+    `${req_url}user/delete/${buffer_id.textContent}`,
   )) {
     users_table = `${users_table}${line}`;
   }

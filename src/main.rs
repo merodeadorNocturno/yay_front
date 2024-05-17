@@ -7,15 +7,12 @@ mod constants;
 mod controllers;
 mod utils;
 
-// use crate::constants::connection::set_environment_variable;
 use crate::controllers::{my_web_controller::*, static_controller::static_controllers};
 use crate::utils::env::{get_cwd, get_log_level, set_env_urls, PageConfiguration};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     let mut builder = Builder::new();
-
-    // let log_level =
 
     builder
         .filter(None, get_log_level())

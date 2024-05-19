@@ -10,18 +10,9 @@ let ajaxCompleteEvent = new CustomEvent("ajaxComplete", {
 
 document.addEventListener("ajaxComplete", function (e) {
   console.log(e.detail.message); // Logs "AJAX request completed!"
-  // htmx.process("container");
   ks(State.SEND_ERASE_COMMAND);
   machine(Input.RECEIVE_CONFIRMATION_FROM_SERVER);
-  // let users_navbar_menu = document.getElementById("users-navbar-menu");
-  // let users_navbar_click = new Event("click");
-  // users_navbar_menu.dispatchEvent(users_navbar_click);
-  // htmx.process("#container");
 });
-
-// document.body.addEventListener("user-delete-error", (e) => {
-//   console.log("USER DELETE ERROR");
-// });
 
 (() => {
   // functions

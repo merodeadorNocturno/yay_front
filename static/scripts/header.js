@@ -159,13 +159,3 @@ async function* iterate_over_stream_response(file_url) {
     yield chunk.substr(startIndex);
   }
 }
-
-document.addEventListener("htmx:afterRequest", function (evt) {
-  const { detail } = evt;
-  console.log(">>>>>>>>>>>>", detail);
-  if (detail.successful && detail.target.id == "info-div") {
-    //   let infoDiv = document.getElementById("info-div");
-    //   infoDiv.style.backgroundColor = "#000000"; // black background
-    //   infoDiv.style.color = "#FFFFFF"; // white text
-  }
-});

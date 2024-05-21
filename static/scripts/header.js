@@ -7,6 +7,8 @@ const backe_url = () =>
 var buffer_name = document.getElementById("buffer-name");
 var buffer_id = document.getElementById("buffer-id");
 
+var error_modal = document.getElementById("error_modal");
+
 function trigger_delete($e) {
   const data = $e.getAttribute("data");
   const delete_user_button = document.getElementById("delete-user-button");

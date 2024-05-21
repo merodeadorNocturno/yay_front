@@ -14,6 +14,12 @@ document.addEventListener("ajaxComplete", function (e) {
   machine(Input.RECEIVE_CONFIRMATION_FROM_SERVER);
 });
 
+document.body.addEventListener("page_error", (e) => {
+  error_modal.classList.add("is-active");
+  const error_message = document.querySelector("#error_message");
+  error_message.innerHTML = e.detail.value;
+});
+
 (() => {
   // functions
   const remove_class = (element = [], dom_class = "") => {
@@ -44,7 +50,7 @@ document.addEventListener("ajaxComplete", function (e) {
     enterprise_element.classList.add("is-active");
   });
 
-  nbs.addEventListener("error_enterprise_table", (e) => {
+  nbs.addEventListener("error_enterprise_table", (_e) => {
     const error_modal = document.getElementById("error_enterprise_table_modal");
     error_modal.classList.add("is-active");
   });
@@ -57,7 +63,7 @@ document.addEventListener("ajaxComplete", function (e) {
     }
   });
 
-  document.addEventListener("delete-user-alert", (e) => {
+  document.addEventListener("delete-user-alert", (_e) => {
     const delete_user_alert = document.getElementById("delete-user-alert");
     delete_user_alert.classList.add("is-active");
   });
@@ -65,7 +71,7 @@ document.addEventListener("ajaxComplete", function (e) {
   const mc = document.querySelectorAll(".modal-close");
   const m = document.querySelectorAll(".modal");
   for (const modal_close of mc) {
-    modal_close.addEventListener("click", (e) =>
+    modal_close.addEventListener("click", (_e) =>
       m.forEach((el) => close_modal(el)),
     );
   }

@@ -5,6 +5,8 @@ use log::{info, warn};
 
 mod constants;
 mod controllers;
+mod extractors;
+mod models;
 mod utils;
 
 use crate::controllers::{my_web_controller::*, static_controller::static_controllers};

@@ -47,3 +47,8 @@ pub struct Message {
     pub metadata: Metadata,
     pub text: String,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct UserUuid {
+    pub uuid: String,
+}

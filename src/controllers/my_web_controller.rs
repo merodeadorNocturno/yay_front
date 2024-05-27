@@ -2,16 +2,20 @@ use actix_web::{
     web::{get, ServiceConfig},
     HttpResponse,
 };
+use actix_web_httpauth::extractors::bearer::BearerAuth;
+use handlebars::{Handlebars, RenderError};
+use log::{debug, error, warn};
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::path::Path;
 
+use crate::extractors::{claims::Claims, validation::validate};
+
+// use crate::extractors::claims::Claims;
 use crate::utils::{
     env::set_env_urls,
     fs_utils::{read_hbs_template, register_templates},
 };
-use handlebars::{Handlebars, RenderError};
-use log::{debug, error};
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Title {
@@ -30,7 +34,13 @@ impl TitleError {
 }
 
 async fn index_html() -> Result<String, RenderError> {
+    // let key = b"lIoZjhkjsQYpiU08LFGHaJUrddNP1g51dViYZhUuzKF4an4Qkz9MNfvIjiIT5Ude";
+    // validate();
+    // validate(key, auth.token().to_string());
     let mut handlebars = Handlebars::new();
+    // let tkn = format!("@@@@@@@@@@@@@@@@@@@@@@@@ {:?}", auth);
+    // let tkn = format!("@@@@@@@@@@@@@@@@@@@@@@@@ {}", &auth.token());
+    // warn!("template path: {}", tkn);
 
     let this_path = Path::new("./src/static");
     register_templates(this_path, &mut handlebars);
@@ -126,26 +136,73 @@ async fn enterprise_services_panel() -> Result<String, RenderError> {
     Ok(yay_help)
 }
 
-pub fn index_html_controllers(cfg: &mut ServiceConfig) {
-    cfg.route(
-    "/",
-    get().to(|| async move {
-      let yay_help_template = index_html().await;
+async fn login() -> Result<String, RenderError> {
+    let mut handlebars = Handlebars::new();
 
-      match yay_help_template {
-        Ok(yht) => HttpResponse::Ok()
-          .content_type("text/html")
-          .append_header(("HX-Trigger", "help_table"))
-          .body(yht),
-        Err(e) => HttpResponse::Ok()
-          .content_type("text/html")
-          .body(
-            format!("<span class=\"icon is-small is-left\"><i class=\"fas fa-ban\"></i>Failed to load title: {}</span>",
-            e.to_string())
-          )
-      }
-    })
-  );
+    let this_path = Path::new("./src/static");
+    register_templates(this_path, &mut handlebars);
+
+    let login_hbs = "login";
+
+    let index = match read_hbs_template(&login_hbs) {
+        Ok(contents) => contents,
+        Err(e) => {
+            error!(
+                "Failed to render contents for edit title:: {}",
+                e.to_string()
+            );
+            TitleError::new(e.to_string()).error
+        }
+    };
+
+    let default_env = set_env_urls();
+
+    let index_template = handlebars.render_template(&index, &json!(default_env))?;
+    Ok(index_template)
+}
+
+pub fn index_html_controllers(cfg: &mut ServiceConfig) {
+    // cfg.service(resource("/").wrap(Claims::).route(get().to(index_html)));
+
+    cfg.route(
+      "/",
+      get().to(|| async move {
+        let yay_help_template = index_html().await;
+
+        match yay_help_template {
+          Ok(yht) => HttpResponse::Ok()
+            .content_type("text/html")
+            .append_header(("HX-Trigger", "help_table"))
+            .body(yht),
+          Err(e) => HttpResponse::Ok()
+            .content_type("text/html")
+            .body(
+              format!("<span class=\"icon is-small is-left\"><i class=\"fas fa-ban\"></i>Failed to load title: {}</span>",
+              e.to_string())
+            )
+        }
+      })
+    );
+
+    cfg.route(
+      "/login",
+      get().to(|| async move {
+        let yay_help_template = login().await;
+
+        match yay_help_template {
+          Ok(yht) => HttpResponse::Ok()
+            .content_type("text/html")
+            .append_header(("HX-Trigger", "help_table"))
+            .body(yht),
+          Err(e) => HttpResponse::Ok()
+            .content_type("text/html")
+            .body(
+              format!("<span class=\"icon is-small is-left\"><i class=\"fas fa-ban\"></i>Failed to load title: {}</span>",
+              e.to_string())
+            )
+        }
+      })
+    );
 
     cfg.route(
     "/help_enterprise",

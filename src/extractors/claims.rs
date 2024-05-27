@@ -16,6 +16,7 @@ use jsonwebtoken::{
     jwk::{AlgorithmParameters, JwkSet},
     Algorithm, DecodingKey, Validation,
 };
+use log::warn;
 use serde::Deserialize;
 use std::{collections::HashSet, future::Future, pin::Pin};
 use thiserror::Error;
@@ -31,6 +32,7 @@ pub struct Auth0Config {
 
 impl Default for Auth0Config {
     fn default() -> Self {
+        warn!("extractors/claims.rs::Default for Auth0Config::default");
         Auth0Config {
             audience: set_environment_variable("AUTH0_AUDIENCE", "https://crm.yayleads.mx"),
             domain: set_environment_variable("AUTH0_DOMAIN", "dev-zv75zriia3jcgnej.us.auth0.com"),
@@ -56,6 +58,8 @@ enum ClientError {
 
 impl ResponseError for ClientError {
     fn error_response(&self) -> HttpResponse<awc::body::BoxBody> {
+        warn!("extractors/claims.rs::ResponseError for ClientError::error_response");
+
         match self {
             Self::Authentication(_) => HttpResponse::Unauthorized().json(ErrorMessage {
                 error: None,
@@ -108,10 +112,15 @@ impl FromRequest for Claims {
         req: &actix_web::HttpRequest,
         _payload: &mut actix_web::dev::Payload,
     ) -> Self::Future {
+        warn!(
+            "extractors/claims.rs::FromRequest for Claims::from_request {:?}",
+            req
+        );
         let config = req.app_data::<Auth0Config>().unwrap().clone();
         let extractor = BearerAuth::extract(req);
 
         Box::pin(async move {
+            warn!("extractors/claims.rs::FromRequest for Claims::from_request::Box::pin");
             let credentials = extractor.await.map_err(ClientError::Authentication)?;
             let token = credentials.token();
             let header = decode_header(token).map_err(ClientError::Decode)?;
@@ -124,7 +133,7 @@ impl FromRequest for Claims {
                     Uri::builder()
                         .scheme("https")
                         .authority(domain)
-                        .path_and_query("/.well-known/jwks.json")
+                        .path_and_query("/")
                         .build()
                         .unwrap(),
                 )
@@ -134,6 +143,7 @@ impl FromRequest for Claims {
                 .json()
                 .await
                 .map_err(ClientError::InvalidJWKSError)?;
+            warn!("extractors/claims.rs::FromRequest for Claims::from_request::Box::pin::jwks");
 
             let jwk = jwks
                 .find(&kid)
@@ -141,6 +151,8 @@ impl FromRequest for Claims {
 
             match jwk.clone().algorithm {
                 AlgorithmParameters::RSA(ref rsa) => {
+                    warn!("extractors/claims.rs::FromRequest for Claims::from_request::Box::pin::match jwk.algorithm::AlgorithmParameters");
+
                     let mut validation = Validation::new(Algorithm::RS256);
                     validation.set_audience(&[config.audience]);
                     validation.set_issuer(&[Uri::builder()
@@ -153,10 +165,15 @@ impl FromRequest for Claims {
                         .map_err(ClientError::Decode)?;
                     let new_token =
                         decode::<Claims>(token, &key, &validation).map_err(ClientError::Decode)?;
+                    warn!("extractors/claims.rs::FromRequest for Claims::from_request::Box::pin::match jwk.algorithm::AlgorithmParameters token: {}", &token);
 
                     Ok(new_token.claims)
                 }
-                algorithm => Err(ClientError::UnsupportedAlgorithm(algorithm).into()),
+                algorithm => {
+                    warn!("extractors/claims.rs::FromRequest for Claims::from_request::Box::pin::match jwk.algorithm::algorithm:: ERROR");
+
+                    Err(ClientError::UnsupportedAlgorithm(algorithm).into())
+                }
             }
         }) // Box::pin
     }

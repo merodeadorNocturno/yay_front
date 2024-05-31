@@ -1,15 +1,13 @@
 use actix_web::{
     web::{get, ServiceConfig},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
-use actix_web_httpauth::extractors::bearer::BearerAuth;
 use handlebars::{Handlebars, RenderError};
-use log::{debug, error, warn};
+use http::Error;
+use log::{debug, error};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use std::path::Path;
-
-use crate::extractors::{claims::Claims, validation::validate};
 
 // use crate::extractors::claims::Claims;
 use crate::utils::{
@@ -142,7 +140,7 @@ async fn login() -> Result<String, RenderError> {
     let this_path = Path::new("./src/static");
     register_templates(this_path, &mut handlebars);
 
-    let login_hbs = "login";
+    let login_hbs = "auth0";
 
     let index = match read_hbs_template(&login_hbs) {
         Ok(contents) => contents,
@@ -161,9 +159,37 @@ async fn login() -> Result<String, RenderError> {
     Ok(index_template)
 }
 
-pub fn index_html_controllers(cfg: &mut ServiceConfig) {
-    // cfg.service(resource("/").wrap(Claims::).route(get().to(index_html)));
+// async fn callback(query: Query<HashMap<String, String>>) -> Result<String, RenderError> {
+async fn callback(req: HttpRequest) -> Result<HttpResponse, Error> {
+    let query = req.query_string();
+    // let code = query.get("code").expect("Missing authorization code");
+    error!("{query}");
+    Ok(HttpResponse::Found().finish())
+    // let mut handlebars = Handlebars::new();
 
+    // let this_path = Path::new("./src/static");
+    // register_templates(this_path, &mut handlebars);
+
+    // let login_hbs = "login";
+
+    // let index = match read_hbs_template(&login_hbs) {
+    //     Ok(contents) => contents,
+    //     Err(e) => {
+    //         error!(
+    //             "Failed to render contents for edit title:: {}",
+    //             e.to_string()
+    //         );
+    //         TitleError::new(e.to_string()).error
+    //     }
+    // };
+
+    // let default_env = set_env_urls();
+
+    // let index_template = handlebars.render_template(&index, &json!(default_env))?;
+    // Ok(index_template)
+}
+
+pub fn index_html_controllers(cfg: &mut ServiceConfig) {
     cfg.route(
       "/",
       get().to(|| async move {
@@ -194,6 +220,26 @@ pub fn index_html_controllers(cfg: &mut ServiceConfig) {
             .content_type("text/html")
             .append_header(("HX-Trigger", "help_table"))
             .body(yht),
+          Err(e) => HttpResponse::Ok()
+            .content_type("text/html")
+            .body(
+              format!("<span class=\"icon is-small is-left\"><i class=\"fas fa-ban\"></i>Failed to load title: {}</span>",
+              e.to_string())
+            )
+        }
+      })
+    );
+
+    cfg.route(
+      "/callback",
+      get().to(|req: HttpRequest| async move {
+        let yay_help_template = callback(req).await;
+
+        match yay_help_template {
+          Ok(yht) => HttpResponse::Ok()
+            .content_type("text/html")
+            .append_header(("HX-Trigger", "help_table")).body("body".to_string()),
+            // .body(yht),
           Err(e) => HttpResponse::Ok()
             .content_type("text/html")
             .body(

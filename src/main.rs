@@ -1,17 +1,7 @@
-use actix_http::Payload;
-use actix_web::{
-    body::{EitherBody, MessageBody},
-    dev::{Service, ServiceRequest, ServiceResponse},
-    error::ErrorUnauthorized,
-    middleware,
-    web::Data,
-    App, Error, HttpMessage, HttpRequest, HttpServer,
-};
+use actix_web::{middleware, web::Data, App, HttpServer};
 // use actix_cors::Cors;
 use actix_web_httpauth::extractors::bearer::Config;
 use env_logger::{Builder, WriteStyle};
-use extractors::claims::Claims;
-use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use log::{info, warn};
 
 mod constants;
@@ -23,7 +13,7 @@ mod models;
 mod utils;
 
 use crate::controllers::{my_web_controller::*, static_controller::static_controllers};
-use crate::extractors::claims::Auth0Config;
+
 use crate::middleware_local::{
     cors::cors, err_handlers::err_handlers, logger::logger, security_headers::security_headers,
 };

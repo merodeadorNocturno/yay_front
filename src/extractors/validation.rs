@@ -1,11 +1,6 @@
-use jsonwebtoken::errors::ErrorKind;
-use jsonwebtoken::{
-    decode, decode_header, Algorithm, DecodingKey, EncodingKey, Header, Validation,
-};
+use jsonwebtoken::{decode_header, Algorithm, Validation};
 use log::error;
 use serde::{Deserialize, Serialize};
-
-use crate::Claims;
 
 #[derive(Debug, Deserialize, Serialize)]
 struct JWTClaims {

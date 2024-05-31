@@ -8,9 +8,27 @@
     rel="stylesheet"
     href="https://site-assets.fontawesome.com/releases/v5.15.4/css/all.css"
   />
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
   <script src="https://unpkg.com/htmx.org@1.9.11" defer></script>
   <script
     src="https://unpkg.com/htmx.org@1.9.11/dist/ext/json-enc.js"
     defer
   ></script>
+  <script>
+    const config = {
+      domain: 'dev-zv75zriia3jcgnej.us.auth0.com'
+      clientId: 'YOUR_CLIENT_ID',
+      authorizationParams: {
+        redirect_uri: 'https://yay.local/callback',
+      },
+      audience: 'https://crm.yayleads.mx', // Optional, if using an API
+    };
+
+    const auth0 = await createAuth0Client(config);
+    const loginButton = document.getElementById('login-button');
+
+    // loginButton.addEventListener('click', async () => {
+    //   await auth0.loginWithRedirect();
+    // });
+  </script>
 </head>

@@ -68,3 +68,29 @@ pub fn set_env_urls() -> PageConfiguration {
         title: set_environment_variable("PAGE_TITLE", "CRM"),
     }
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AuthConfiguration {
+    pub auth0_audience: String,
+    pub auth0_domain: String,
+}
+
+pub fn set_auth_urls() -> AuthConfiguration {
+    AuthConfiguration {
+        auth0_audience: set_environment_variable("AUTH0_AUDIENCE", "https://yay.local"),
+        auth0_domain: set_environment_variable("AUTH0_DOMAIN", "http://some_domain.local"),
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct ClientCredentials {
+    pub client_id: String,
+    pub client_secret: String,
+}
+
+pub fn set_client_credentials() -> ClientCredentials {
+    ClientCredentials {
+        client_id: set_environment_variable("CLIENT_ID", "1234556"),
+        client_secret: set_environment_variable("CLIENT_SECRET", "shhhh"),
+    }
+}

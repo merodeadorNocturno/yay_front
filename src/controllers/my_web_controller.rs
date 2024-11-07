@@ -33,7 +33,9 @@ use serde_json::json;
 use std::path::Path;
 
 use crate::utils::{
-    env::set_env_urls,
+    env::{
+        set_auth_urls, set_client_credentials, set_env_urls, AuthConfiguration, ClientCredentials,
+    },
     fs_utils::{read_hbs_template, register_templates},
 };
 
@@ -264,19 +266,16 @@ async fn callback_n(
 
     let provider_metadata = EmptyAdditionalProviderMetadata::default();
 
+    let AuthConfiguration { auth0_domain, .. } = set_auth_urls();
+
+    let core_client_url = format!("https://{auth0_domain}/");
+
     let client = CoreClient::from_provider_metadata(
         CoreProviderMetadata::new(
-            IssuerUrl::new(
-                "https://dev-zv75zriia3jcgnej.us.auth0.com/.well-known/openid-configuration"
-                    .to_string(),
-            )
-            .unwrap(),
-            AuthUrl::new("https://dev-zv75zriia3jcgnej.us.auth0.com/authorize".to_string())
+            IssuerUrl::new("{&core_client_url}.well-known/openid-configuration".to_string())
                 .unwrap(),
-            JsonWebKeySetUrl::new(
-                "https://dev-zv75zriia3jcgnej.us.auth0.com/.well-known/jwks.json".to_string(),
-            )
-            .unwrap(),
+            AuthUrl::new("{&core_client_url}/authorize".to_string()).unwrap(),
+            JsonWebKeySetUrl::new("{&core_client_url}.well-known/jwks.json".to_string()).unwrap(),
             vec![response_types],
             subject_identifier_types,
             vec![
@@ -354,19 +353,18 @@ async fn callback(
     client: web::Data<Client>,
 ) -> impl Responder {
     error!("{:?}, {:?}", &auth_request, &client);
-    let code = &auth_request.code;
-    // let client_id = env::var("AUTH0_CLIENT_ID").expect("AUTH0_CLIENT_ID not set");
-    let client_id = "iGrVG2EzdK3W4J6CUT5N8fnqYhdrRrmt".to_string();
-    // let client_secret = env::var("AUTH0_CLIENT_SECRET").expect("AUTH0_CLIENT_SECRET not set");
-    let client_secret =
-        "e1133f90910f0f896df4861e707dd8eafd16649ddb3a36f95bf97ee4ec575b20".to_string();
-    // let domain = env::var("AUTH0_DOMAIN").expect("AUTH0_DOMAIN not set");
-    let domain = "dev-zv75zriia3jcgnej.us.auth0.com".to_string();
-    // let redirect_uri = env::var("AUTH0_REDIRECT_URI").expect("AUTH0_REDIRECT_URI not set");
+
+    let AuthConfiguration { auth0_domain, .. } = set_auth_urls();
+
+    let ClientCredentials {
+        client_id,
+        client_secret,
+    } = set_client_credentials();
+
     let redirect_uri = "https://node.local/callback".to_string();
+    let token_url = format!("https://{}/oauth/token", auth0_domain);
 
-    let token_url = format!("https://{}/oauth/token", domain);
-
+    let code = &auth_request.code;
     let params = [
         ("grant_type", "authorization_code"),
         ("client_id", &client_id),
@@ -386,7 +384,7 @@ async fn callback(
         .unwrap();
     error!("SHOULD'VE GOTTEN TOKEN RESPONSE, {:?}", params);
 
-    let user_info_url = format!("https://{}/userinfo", domain);
+    let user_info_url = format!("https://{}/userinfo", &auth0_domain);
 
     let user_info: UserInfo = client
         .get(&user_info_url)
@@ -417,18 +415,16 @@ async fn callback_3(
     }
 
     let code = &auth_request.code;
-    let client_id = "iGrVG2EzdK3W4J6CUT5N8fnqYhdrRrmt".to_string();
-    let client_secret =
-        "e1133f90910f0f896df4861e707dd8eafd16649ddb3a36f95bf97ee4ec575b20".to_string();
-    let domain = "dev-zv75zriia3jcgnej.us.auth0.com".to_string();
-    let redirect_uri = "https://node.local/callback".to_string();
-    // let token_url = format!("https://{}/oauth/token", domain);
-    // let client_id = env::var("AUTH0_CLIENT_ID").expect("AUTH0_CLIENT_ID not set");
-    // let client_secret = env::var("AUTH0_CLIENT_SECRET").expect("AUTH0_CLIENT_SECRET not set");
-    // let domain = env::var("AUTH0_DOMAIN").expect("AUTH0_DOMAIN not set");
-    // let redirect_uri = env::var("AUTH0_REDIRECT_URI").expect("AUTH0_REDIRECT_URI not set");
+    let AuthConfiguration { auth0_domain, .. } = set_auth_urls();
 
-    let token_url = format!("https://{}/oauth/token", domain);
+    let ClientCredentials {
+        client_id,
+        client_secret,
+    } = set_client_credentials();
+
+    let redirect_uri = "https://node.local/callback".to_string();
+
+    let token_url = format!("https://{}/oauth/token", &auth0_domain);
 
     let params = [
         ("grant_type", "authorization_code"),
@@ -448,7 +444,7 @@ async fn callback_3(
 
     match token_response {
         Ok(tokens) => {
-            let user_info_url = format!("https://{}/userinfo", domain);
+            let user_info_url = format!("https://{}/userinfo", &auth0_domain);
             let user_info: UserInfo = client
                 .get(&user_info_url)
                 .bearer_auth(&tokens.access_token)

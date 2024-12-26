@@ -17,13 +17,15 @@
       </div>
 
       <a
+        href=""
         role="button"
         class="navbar-burger"
         aria-label="menu"
         aria-expanded="false"
         data-target="navbarBasicExample"
       >
-        <span aria-hidden="true"></span> <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
       </a>
     </div>
@@ -37,9 +39,9 @@
           hx-swap="innerHTML"
           hx-target="#dynamic-content"
           id="users-navbar-menu"
-          >Users</a
-        >
+        >Users</a>
         <a
+          href=""
           class="navbar-item"
           hx-post="{{backend_url}}htmx/enterprise/table"
           hx-swap="innerHTML"
@@ -48,6 +50,7 @@
           Empresas
         </a>
         <a
+          href=""
           class="navbar-item"
           hx-post="{{backend_url}}htmx/clinics/table"
           hx-swap="innerHTML"
@@ -56,6 +59,7 @@
           Clínicas y Médicos
         </a>
         <a
+          href=""
           class="navbar-item"
           hx-post="{{backend_url}}htmx/schools/table"
           hx-swap="innerHTML"
@@ -64,6 +68,7 @@
           Escuelas
         </a>
         <a
+          href=""
           class="navbar-item"
           hx-get="{{backend_url}}help"
           hx-swap="innerHTML"
